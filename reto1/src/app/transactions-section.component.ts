@@ -10,7 +10,7 @@ import { ShyftApiService } from './shyft-api.service';
   selector: 'reto1-transactions-section',
   imports: [MatTableModule, MatPaginatorModule],
   template: `
-    <section class="px-16 py-4">
+    <section class="px-16 py-4 bg-white bg-opacity-5">
       <h2 class="text-center text-3xl">Historial</h2>
       <!-- <p class="text-center">transactions - section</p> -->
 
@@ -37,11 +37,6 @@ import { ShyftApiService } from './shyft-api.service';
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
-
-          <mat-paginator
-            [pageSizeOptions]="[5, 10, 20]"
-            showFirstLastButtons
-          ></mat-paginator>
         </div>
       }
     </section>

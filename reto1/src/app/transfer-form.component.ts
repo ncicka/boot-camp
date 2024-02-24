@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +38,7 @@ export interface TransferFormPayload {
 
       <mat-icon matSuffix>description</mat-icon>
 
-      @if (form.submitted && memoControl.errors) {
+      @if (memoControl.errors) {
         <mat-error>
           @if (memoControl.errors['required']) {
             El motivo es obligatorio
@@ -56,6 +56,7 @@ export interface TransferFormPayload {
         matInput
         type="number"
         min="0.1"
+        [max]="balance"
         placeholder="Ingresa el monto acá"
         [(ngModel)]="model.amount"
         required
@@ -64,16 +65,18 @@ export interface TransferFormPayload {
 
       <mat-icon matSuffix>attach_money</mat-icon>
 
-      @if (form.submitted && amountControl.errors) {
+      @if (amountControl.errors) {
         <mat-error>
           @if (amountControl.errors['required']) {
             El monto es obligatorio
           } @else if (amountControl.errors['min']) {
             El monto debe ser mayor a cero
+          } @else if (amountControl.errors['max']) {
+            El monto debe ser menor al disponible {{ balance }}
           }
         </mat-error>
       } @else {
-        <mat-hint>Debe ser un monto mayor a cero</mat-hint>
+        <mat-hint>El monto debe ser mayor a cero</mat-hint>
       }
     </mat-form-field>
 
@@ -92,7 +95,8 @@ export interface TransferFormPayload {
 
       <mat-icon matSuffix>key</mat-icon>
 
-      @if (form.submitted && receiverAddressControl.errors) {
+      <!--@if (form.submitted && receiverAddressControl.errors) { -->
+      @if (receiverAddressControl.errors) {
         <mat-error>
           @if (receiverAddressControl.errors['required']) {
             El destinatario es obligatorio
@@ -103,7 +107,14 @@ export interface TransferFormPayload {
       }
     </mat-form-field>
     <footer class="flex justify-center">
-      <button type="submit" mat-raised-button color="primary">Enviar</button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        Enviar
+      </button>
     </footer>
   </form>`,
   standalone: true,
@@ -116,9 +127,12 @@ export class TransferFormComponent {
     receiverAddress: null,
   };
 
+  @Input() public balance!: number;
+
   @Output() readonly submitFrom = new EventEmitter<TransferFormPayload>();
 
   onSubmitForm(form: NgForm) {
+    console.log(this.balance);
     if (
       form.invalid ||
       this.model.amount === null ||

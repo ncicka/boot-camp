@@ -1,12 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, of } from 'rxjs';
+import { map, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ShyftApiService {
   private readonly _httpClient = inject(HttpClient);
-  private readonly _header = { 'x-api-key': 'Hsto5de_C4cYjCvd' };
+  private readonly _key = 'Hsto5de_C4cYjCvd';
+  private readonly _header = { 'x-api-key': this._key };
   private readonly _mint = '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs';
+
+  getEndpoint() {
+    const url = new URL('https://rpc.shyft.to');
+
+    url.searchParams.set('api_key', this._key);
+    return url.toString();
+  }
 
   getAccount(publicKey: string | undefined | null) {
     if (!publicKey) {
@@ -41,6 +49,14 @@ export class ShyftApiService {
       .get<{
         result: { timestamp: string; type: string }[];
       }>(url.toString(), { headers: this._header })
-      .pipe(map((response) => response.result));
+      .pipe(
+        tap((response) => {
+          response.result.map((transaction) => {
+            console.log(transaction);
+            return transaction;
+          });
+        }),
+        map((response) => response.result),
+      );
   }
 }
