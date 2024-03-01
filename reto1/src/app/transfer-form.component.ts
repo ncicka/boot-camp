@@ -106,7 +106,7 @@ export interface TransferFormPayload {
         <mat-hint>Debe ser una wallet de Solana</mat-hint>
       }
     </mat-form-field>
-    <footer class="flex justify-center">
+    <footer class="flex justify-center gap-10">
       <button
         type="submit"
         mat-raised-button
@@ -114,6 +114,10 @@ export interface TransferFormPayload {
         [disabled]="form.invalid"
       >
         Enviar
+      </button>
+
+      <button mat-button mat-raised-button (click)="closeform()">
+        Cancelar
       </button>
     </footer>
   </form>`,
@@ -130,9 +134,9 @@ export class TransferFormComponent {
   @Input() public balance!: number;
 
   @Output() readonly submitFrom = new EventEmitter<TransferFormPayload>();
+  @Output() readonly closeForm = new EventEmitter();
 
   onSubmitForm(form: NgForm) {
-    console.log(this.balance);
     if (
       form.invalid ||
       this.model.amount === null ||
@@ -146,6 +150,11 @@ export class TransferFormComponent {
         memo: this.model.memo,
         receiverAddress: this.model.receiverAddress,
       });
+      form.onReset();
     }
+  }
+
+  closeform() {
+    this.closeForm.emit();
   }
 }

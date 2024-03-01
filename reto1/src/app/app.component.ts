@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
@@ -7,7 +8,12 @@ import { ShyftApiService } from './shyft-api.service';
 
 @Component({
   standalone: true,
-  imports: [RouterModule, HdWalletMultiButtonComponent, MatAnchor],
+  imports: [
+    RouterModule,
+    HdWalletMultiButtonComponent,
+    MatAnchor,
+    CommonModule,
+  ],
   selector: 'reto1-root',
   template: `
     <header class="px-16 pt-20 pb-4 relative">

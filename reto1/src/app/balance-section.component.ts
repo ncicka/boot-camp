@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { WalletStore } from '@heavy-duty/wallet-adapter';
 import { computedAsync } from 'ngxtension/computed-async';
 import { ShyftApiService } from './shyft-api.service';
@@ -42,8 +42,9 @@ export class BalanceSectionComponent {
   );
 
   onTransfer() {
-    this._matDialog.open(TransferModalComponent, {
-      data: { balance: this.account()?.balance },
-    });
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.data = { balance: this.account()?.balance };
+    this._matDialog.open(TransferModalComponent, dialogConfig);
   }
 }
